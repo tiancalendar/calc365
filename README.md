@@ -1,5 +1,5 @@
 # 
-
+<html><body>
 <table>
 <tr>
 <th><textarea rows="2" cols="10" style="font-size: 12pt" id="myText"></textarea></th>
@@ -19,4 +19,5 @@
 </textarea></th>
 
 </tr>
-<table>
+</table>
+</body></body>
