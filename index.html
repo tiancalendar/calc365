@@ -1,242 +1,204 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-<title>Calendar Month</title>
+<title>midori </title>
 </head>
 <body>
-<head>
-<style>
- 	body {
-   /* diameter of the circle */
-   --d: 2px; 
-   
-   background : radial-gradient(
-     circle at 
-        var(--d) 
-        var(--d), 
-        
-     #D3d3d3 calc(var(--d) - 1px), 
-     #D3d3d3 var(--d)
-   ) 
-   0 0 / 33px 33px;
+
+
+<div class="ruled-paper" role="main">
+  <div class="ruled-paper-header"></div>
+<div class="ruled-paper-body" contenteditable="true">
+  <p id="demo"></p>
+  <style>
+  
+#timedate {
+  font: small-caps lighter 33px/150% "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
+  text-align:left;
+  width: 50%;
+  margin: 2px auto;
+  color:#black;
+  border-left: 0px solid #d3d3d3;
+  padding: 3px;
 }
-        
-        body {
-    font-family: Arial, sans-serif;
+  .container {
+  display: grid;
+  grid-template-areas:
+    "header header"
+    "menu content"
+    "footer footer";
+  grid-template-columns: 1fr 3fr;
+  gap: 5px;
+  background-color: #f5f5f5;
+  padding: 5px;
 }
-
-#calendar {
-    width: 100%;
-    max-width: 300px;
-    margin: 0 auto;
+.container > div {
+  background-color: #f0f8ff ;
+  padding: 10px;
 }
-
-#calendar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1px;
-    background-color: #808080;
-    color: #fff;
+.container > div.header {
+  grid-area: header;
+  text-align: center;
 }
-#days {
-    display: flex;
-    justify-content: space-between;
-    padding: 1px;
-    background-color: #808080;
-    color: #fff;
-    text-align: center ;
-    border: 1px solid gray;
+.container > div.menu {
+  grid-area: menu;
 }
-
-
-#calendar-body {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 1px;
-    background-color: #808080;
-    transition: opacity 0.5s ease;
-    opacity: 1;
+.container > div.content {
+  grid-area: content;
 }
-
-#calendar-body.fade-out {
-    opacity: 0;
+.container > div.footer {
+  grid-area: footer;
 }
-
-#calendar-body div {
-    padding: 3px;
-    background-color: #fff;
-    text-align: center;
+:root {
+  --bg-color: #fff;
+  --margin-line-color: #fffff0;
+  --ruling-line-color: #ffff;
 }
-#calendar-body div.today {
-    background-color: #FFFF00;
-    color: #808080;
+*, *::before, *::after {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
-
-.change-month {
-    cursor: pointer;
+body {
+  --dot-bg: white;
+  --dot-color: black;
+  --dot-size: 1px;
+  --dot-space: 22px;
+	background:
+		linear-gradient(90deg, var(--dot-bg) calc(var(--dot-space) - var(--dot-size)), transparent 1%) center / var(--dot-space) var(--dot-space),
+		linear-gradient(var(--dot-bg) calc(var(--dot-space) - var(--dot-size)), transparent 1%) center / var(--dot-space) var(--dot-space),
+		var(--dot-color);
 }
-
-        
-    </style>
-</head>
-<body>
-    
-    <div id="calendar"> <div id="calendar-header"> <span id="month-prev" class="change-month">&lt;</span> <h1 id="month"></h1> <span id="month-next" class="change-month">&gt;</span> </div> 
-    <div id="days"></div>
-    
-    <div id="calendar-body">
-    
-    
-    </div>
-    
-    
-    
-     </div>
-        
-    <script>
-    let date = new Date();
-
-function renderCalendar() {
-    date.setDate(1);
-
-    const monthDays = document.getElementById('calendar-body');
-    const month = document.getElementById('month');
-    const daysElement = document.getElementById('days');
-
-    const lastDay = new Date(
-        date.getFullYear(),
-        date.getMonth() + 1,
-        0
-    ).getDate();
-
-    const prevLastDay = new Date(
-        date.getFullYear(),
-        date.getMonth(),
-        0
-    ).getDate();
-
-    const firstDayIndex = date.getDay();
-
-    const lastDayIndex = new Date(
-        date.getFullYear(),
-        date.getMonth() + 1,
-        0
-    ).getDay();
-
-    const nextDays = 7 - lastDayIndex - 1;
-
-    const months = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December'
-    ];
-
-    const days = [
-        'S',
-        'M',
-        'T',
-        'W',
-        'T',
-        'F',
-        'S'
-    ];
-
-    month.innerText = `${months[date.getMonth()]} ${date.getFullYear()}`;
-    daysElement.innerHTML = days.map(day => `<div>${day}</div>`).join('');
-
-    let dates = '';
-
-    for (let x = firstDayIndex; x > 0; x--) {
-        dates += `<div class='prev-date'>${prevLastDay - x + 1}</div>`;
-    }
-
-    for (let i = 1; i <= lastDay; i++) {
-        if (
-            i === new Date().getDate() &&
-            date.getMonth() === new Date().getMonth() &&
-            date.getFullYear() === new Date().getFullYear()
-        ) {
-            dates += `<div class='today'>${i}</div>`;
-        } else {
-            dates += `<div>${i}</div>`;
-        }
-    }
-
-    for (let j = 1; j <= nextDays; j++) {
-        dates += `<div class='next-date'>${j}</div>`;
-    }
-    monthDays.innerHTML = dates;
+  
+div {
+  background-color: #fffff0;
+}
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  background-color: #fffff0;
 }
 
-document.getElementById('month-prev').addEventListener('click', () => {
-    document.getElementById('calendar-body').classList.add('fade-out');
-    setTimeout(() => {
-        date.setMonth(date.getMonth() - 1);
-        renderCalendar();
-        document.getElementById('calendar-body').classList.remove('fade-out');
-    }, 500);
-});
-
-document.getElementById('month-next').addEventListener('click', () => {
-    document.getElementById('calendar-body').classList.add('fade-out');
-    setTimeout(() => {
-        date.setMonth(date.getMonth() + 1);
-        renderCalendar();
-        document.getElementById('calendar-body').classList.remove('fade-out');
-    }, 500);
-});
-
-renderCalendar();
-
-
-     </script>
-     
-<p style="font-family:times new roman" Font= 14px>This is a weekly calendar of a month   .</p>   
-
-<style>
-table {
-  font-family: times new roman;
-  border-collapse: solid;
-  width: 100%;
-}
-
-td, th {
-  border: 1px solid #87cefa ;
-  text-align: left;
-  padding: 2px;
-}
 </style>
 
-<table>
-<tr>
-<th><textarea rows="2" cols="10" style="font-size: 12pt" id="myText"></textarea></th>
-<th><textarea rows="2" cols="10" style="font-size: 12pt" id="myText"></textarea></th>
-<th><textarea rows="2" cols="10" style="font-size: 12pt" id="myText"></textarea></th>
-<th><textarea rows="2" cols="10" style="font-size: 12pt" id="myText"></textarea></th>
+<div class="container">
+  <div class="header">
 
-</tr>
-<tr>
-<th><textarea rows="23" cols="26" style="font-size: 16pt" id="myText">
-</textarea></th>
-<th><textarea rows="23" cols="26" style="font-size: 16pt" id="myText">
-</textarea></th>
-<th><textarea rows="23" cols="26" style="font-size: 16pt" id="myText">
-</textarea></th>
-<th><textarea rows="23" cols="26" style="font-size: 16pt" id="myText">
-</textarea></th>
+<body onLoad="initClock()">
 
-</tr>
-<table>
-</body>
-</html>
+  <body onLoad="initClock()">
+
+  <div id="timedate">
+    <a id="mon">January</a>
+    <a id="d">1</a>,
+    <a id="y">0</a><br />
+    <a id="h">12</a> :
+    <a id="m">00</a>:
+    <a id="s">00</a>:
+    
+  </div>
+</table>
+
+
+<script>
+  // START CLOCK SCRIPT
+
+Number.prototype.pad = function(n) {
+  for (var r = this.toString(); r.length < n; r = 0 + r);
+  return r;
+};
+
+function updateClock() {
+  var now = new Date();
+  var 
+    sec = now.getSeconds(),
+    min = now.getMinutes(),
+    hou = now.getHours(),
+    mo = now.getMonth(),
+    dy = now.getDate(),
+    yr = now.getFullYear();
+  var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  var tags = ["mon", "d", "y", "h", "m", "s"],
+    corr = [months[mo], dy, yr, hou.pad(2), min.pad(2), sec.pad(2)];
+  for (var i = 0; i < tags.length; i++)
+    document.getElementById(tags[i]).firstChild.nodeValue = corr[i];
+}
+
+function initClock() {
+  updateClock();
+  window.setInterval("updateClock()", 1);
+}
+
+// END CLOCK SCRIPT
+
+var d = document;
+
+// not using this at the moment but might do later for graceful degradation...
+function supports_html5_storage() {
+  try {
+    return 'localStorage' in window && window['localStorage'] !== null;
+  } catch (e) {
+    return false;
+  }
+}
+
+d.addEventListener('DOMContentLoaded', function(){
+
+  var savedContent = localStorage.getItem("notepadcontent");
+  if(savedContent != null){
+    d.getElementById("notepad").value = savedContent;
+  }
+ 
+ 
+ d.getElementById("notepad").onkeyup = function(){
+  var data = d.getElementById("notepad").value;  localStorage.setItem("notepadcontent", data);
+  }
+});
+</script>
+
+  </div>
+  <div class="menu"> <h2> Cornell notes </h2>
+
+
+
+
+</div>
+  <div class="content"><h3><table>
+  <tr>
+    <th>time</th>
+    <th>a</th>
+    <th>b</th>
+    <th>c</th>
+  </tr>
+  <tr>
+    <td>6 [] <textarea name="myTextBox" cols="20" rows="2"> </textarea></td>
+    <td>7 [] <textarea name="myTextBox" cols="20" rows="2"> </textarea></td>
+    <td>8 [] <textarea name="myTextBox" cols="20" rows="2"> </textarea></td>
+    <td>9 [] <textarea name="myTextBox" cols="20" rows="2"> </textarea></td>
+  </tr>
+<tr>
+    <td>10 [] <textarea name="myTextBox" cols="20" rows="2"> </textarea></td>
+    <td>11 [] <textarea name="myTextBox" cols="20" rows="2"> </textarea></td>
+    <td>12 [] <textarea name="myTextBox" cols="20" rows="2"> </textarea></td>
+    <td>1 [] <textarea name="myTextBox" cols="20" rows="2"> </textarea></td>
+  </tr>
+  <tr>
+    <td>2 [] <textarea name="myTextBox" cols="20" rows="2"> </textarea></td>
+    <td>3 [] <textarea name="myTextBox" cols="20" rows="2"> </textarea></td>
+    <td>4 [] <textarea name="myTextBox" cols="20" rows="2"> </textarea></td>
+    <td>5 [] <textarea name="myTextBox" cols="20" rows="2"> </textarea></td>
+  </tr>
+  <tr>
+    <td>6 [] <textarea name="myTextBox" cols="20" rows="2"> </textarea></td>
+    <td>7 [] <textarea name="myTextBox" cols="20" rows="2"> </textarea></td>
+    <td>8 [] <textarea name="myTextBox" cols="20" rows="2"> </textarea></td>
+    <td>9 [] <textarea name="myTextBox" cols="20" rows="2"> </textarea></td>
+  </tr></p></div>
+  <div class="footer"><h4>Midori page</h4></div>
+</div>
+
+
+    </html>
+
